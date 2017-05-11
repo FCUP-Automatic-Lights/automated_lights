@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/message.css') }}">
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js">
+    </script>
+    <script>
+        $(document).ready(function () {
+            setInterval(function () {
+                cache_clear()
+            }, 1000);
+        });
+        function cache_clear() {
+            window.location.reload(true);
+            // window.location.reload(); use this if you do not remove cache
+        }
+    </script>
+    <title>Hello World</title>
+    <style>
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+
+        body {
+            display: table;
+        }
+
+        .my-block {
+            text-align: center;
+            display: table-cell;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+<div class="my-block">
+    WORD1<br/>
+    WORDWORDWORDWORD2
+</div>
+</body>
+</html>

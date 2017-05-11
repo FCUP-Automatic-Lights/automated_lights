@@ -1,0 +1,16 @@
+html {width: 100%;} /* force html to be viewport width */
+body {width: 150%; } /* overflow the body */
+
+div {
+    width: 50%;
+    margin: 20px;
+    font-size: 16px;
+    /* 100 = view port width, as 1vw = 1/100th of that
+       Here, the body is 200% of viewport, but the container is 50% 
+       of view port, so both parents factor  into how you want it to size.
+       Let's say you like 5vw if it were the whole width,
+       then for this container, size it at 3.75vw 
+       (5 * 1.5 [i.e. 150%]) * .5 [i.e. 50%]
+    */
+    font-size: 3.75vw; 
+}

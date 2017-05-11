@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<body>
+
+<table border=1>
+    <thead>
+    <td>Name</td>
+    <td>MAC Address></td>
+    <td>Message</td>
+    </thead>
+
+    {% for row in rows %}
+    <tr>
+        <td>{{row["name"]}}</td>
+        <td>{{row["mac"]}}</td>
+        <td>{{row['message']}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>
