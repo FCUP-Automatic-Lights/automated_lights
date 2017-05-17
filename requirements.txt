@@ -1,3 +1,4 @@
 flask
 flask-api
 flask-rest
+pySerial

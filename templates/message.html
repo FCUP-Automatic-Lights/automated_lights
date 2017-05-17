@@ -40,8 +40,13 @@
 </head>
 <body>
 <div class="my-block">
-    WORD1<br/>
-    WORDWORDWORDWORD2
+    {% if user %}
+    Hello, {{ user }}<br/>
+    {{ message }}
+    {% else %}
+    Embedded Systems<br/>
+    Automated Lights!
+    {% endif %}
 </div>
 </body>
 </html>
