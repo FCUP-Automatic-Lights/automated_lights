@@ -105,7 +105,7 @@ def try_register(conn):
         return 0
     c = conn.cursor()
     c.execute("INSERT INTO users_inside (mac) VALUES(?)", (strongest_signal.mac,))
-
+    c.execute("UPDATE show_message set mac=?, seconds = 10, show = 'yes' WHERE id = 0", (strongest_signal.mac,))
     conn.commit()
     # todo store information that new user entered for message
 
