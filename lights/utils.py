@@ -16,19 +16,7 @@ class ClientInfo(object):
 
 # calls command which monitors connected devices and parses mac address with signal
 def parse_in_range():
-    # output = subprocess.check_output(COMMAND, universal_newlines=True).splitlines(True)
-    output = ['Station address 4c:34:88:04:c9:a5 (on wlan0)\n', '\tinactive time:\t20 ms\n', '\trx bytes:\t136887\n',
-              '\trx packets:\t1496\n', '\ttx bytes:\t90877\n', '\ttx packets:\t471\n', '\ttx retries:\t0\n',
-              '\ttx failed:\t0\n', '\tsignal:  \t-41 [-41] dBm\n', '\tsignal avg:\t-40 [-40] dBm\n',
-              '\ttx bitrate:\t72.2 MBit/s MCS 7 short GI\n', '\trx bitrate:\t72.2 MBit/s MCS 7 short GI\n',
-              '\tauthorized:\tyes\n', '\tauthenticated:\tyes\n', '\tpreamble:\tshort\n', '\tWMM/WME:\tyes\n',
-              '\tMFP:\t\tno\n', '\tTDLS peer:\tno\n', 'Station address2 54:ee:75:5f:42:b4 (on wlan0)\n',
-              '\tinactive time:\t296330 ms\n', '\trx bytes:\t3622\n', '\trx packets:\t33\n', '\ttx bytes:\t5429\n',
-              '\ttx packets:\t35\n', '\ttx retries:\t0\n', '\ttx failed:\t0\n', '\tsignal:  \t-57 [-57] dBm\n',
-              '\tsignal avg:\t-57 [-57] dBm\n', '\ttx bitrate:\t54.0 MBit/s\n', '\trx bitrate:\t48.0 MBit/s\n',
-              '\tauthorized:\tyes\n', '\tauthenticated:\tyes\n', '\tpreamble:\tshort\n', '\tWMM/WME:\tyes\n',
-              '\tMFP:\t\tno\n', '\tTDLS peer:\tno\n']
-
+    output = subprocess.check_output(COMMAND, universal_newlines=True).splitlines(True)
     client_info = []
     c = None
     for l in output:
@@ -53,6 +41,18 @@ def filter_stations(conn):
         return 0, []
     return 1, in_range
 
+
+def return_in_range_stations(conn):
+    clients = parse_in_range()
+    whitelisted = get_whitelisted_macs(conn)
+    in_range = []
+    for c in clients:
+        if c.mac in whitelisted and c.signal >= SIGNAL_THRESHOLD:
+            in_range.append(c)
+
+    if not in_range:
+        return 0, []
+    return 1, in_range
 
 # creates all required data tables
 def create_tables():

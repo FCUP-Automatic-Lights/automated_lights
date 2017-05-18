@@ -1,7 +1,7 @@
 """sync.py: Arduino to Rasp."""
 
 import serial
-from .utils import filter_stations, try_unregister, try_register
+from .utils import return_in_range_stations, try_unregister, try_register
 import sqlite3
 
 if __name__ == "__main__":
@@ -45,7 +45,7 @@ if __name__ == "__main__":
             # Query data and return to arduino
 
             # is in range, is not registered, is whitelisted
-            isThereAnyRegistered, in_range = filter_stations(con)
+            isThereAnyRegistered, in_range = return_in_range_stations(con)
             c.execute("SELECT turn_on, turn_off from turning where id = 0")
             tryingToTurnOn, tryingToTurnOff = c.fetchone()
 
