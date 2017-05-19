@@ -30,13 +30,14 @@ def switch_lights():
                 'error': 'error occurred during inserting into database'
             }), status.HTTP_404_NOT_FOUND
 
-    data = cur.execute('SELECT luminosity, people_count, time FROM stats WHERE id = 0')
-    lum, people_count, time = data.fetchone()
+    data = cur.execute('SELECT luminosity, people_count, time, last_status FROM stats WHERE id = 0')
+    lum, people_count, time, status = data.fetchone()
     con.close()
     return jsonify({
         'luminosity': lum,
         'people_count': people_count,
         'time': time
+        'status': status
     })
 
 

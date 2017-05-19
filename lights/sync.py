@@ -23,11 +23,13 @@ if __name__ == "__main__":
             lux = infos[1].strip().split(':')[1]
             # Gives info about time of light
             time = infos[2].strip().split(':')[1]
+            # Info about the lights (ON / OFF)
+            status = infos[3].strip().split(':')[1]
 
             # Do anything with data
             ret = c.execute("select people_count, time from stats where id = 0")
             previous_people_count, previous_time = ret.fetchone()
-            
+
             # TODO: this needs refactor
             isThereAnyRegistered, in_range = return_in_range_stations(con)
             if len(in_range) == 0:
@@ -39,9 +41,9 @@ if __name__ == "__main__":
 
             # update stats
             time = int(time) + previous_time
-            c.execute("UPDATE stats set luminosity=?, people_count=?, time=? where id = 0",
-                      (lux, person_count, time))
-            
+            c.execute("UPDATE stats set luminosity=?, people_count=?, time=?, last_status=? where id = 0",
+                      (lux, person_count, time, status))
+
             # remotely switching lights
             c.execute("SELECT turn_on from turning where id = 0")
             tryingToTurnOn = c.fetchone()[0]
