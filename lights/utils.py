@@ -56,15 +56,19 @@ def return_in_range_stations(conn):
 
 # checks whether all conditions are met to unregistered user from system
 def try_unregister(conn):
-    # TODO: this needs refactor
+    c = conn.cursor()
     clients = parse_in_range()
     inside = get_users_inside(conn)
+
+    # if some user deactivates wifi, or something malfunctions want to remove
+    instant_delete = set(inside) - set(clients)
+    for i in instant_delete:
+        c.execute("DELETE FROM users_inside WHERE mac=?", (mac,))
+
     # iterate trough users which were inside and kick one which is out from range
     for mac in inside:
         for c in clients:
-            # TODO: Might be a problem if there are two users in range
             if mac == c.mac and c.signal > SIGNAL_THRESHOLD:
-                c = conn.cursor()
                 # delete user from db
                 c.execute("DELETE FROM users_inside WHERE mac=?", (mac,))
                 conn.commit()
