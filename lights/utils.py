@@ -94,7 +94,7 @@ def try_register(conn):
     conn.commit()
 
 
-# get users which are registerd inside a room
+# get users which are registered inside a room
 def get_users_inside(conn):
     conn.row_factory = lambda cursor, row: row[0]
     c = conn.cursor()

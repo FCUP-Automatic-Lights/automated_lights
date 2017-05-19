@@ -1,5 +1,5 @@
 from flask import request, render_template
-from flask.ext.api import FlaskAPI
+from flask.ext.api import FlaskAPI, status
 from flask import jsonify
 
 from lights.utils import *
@@ -51,7 +51,7 @@ def new_user():
             return jsonify({
                 'performed': False,
                 'error': 'one of arguments is not defined'
-            })
+            }), status.HTTP_404_NOT_FOUND
         if len(re.findall(p, mac)) == 0:
             return jsonify({
                 'performed': False,
@@ -101,6 +101,7 @@ def show_message():
             return render_template('message.html', user=user)
         else:
             return render_template('message.html')
+    except:
         con.rollback()
         return jsonify({
             'performed': False,
