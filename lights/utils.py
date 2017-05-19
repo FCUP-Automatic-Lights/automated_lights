@@ -3,6 +3,7 @@ import re
 import sqlite3
 
 SIGNAL_THRESHOLD = -70
+# you have to specify your wifi card here
 COMMAND = ['iw', 'dev', 'wlan0', 'station', 'dump']
 p = re.compile(r'([0-9a-f]{2}(?::[0-9a-f]{2}){5})', re.IGNORECASE)
 
@@ -10,7 +11,7 @@ p = re.compile(r'([0-9a-f]{2}(?::[0-9a-f]{2}){5})', re.IGNORECASE)
 # simple data structure which holds client info
 class ClientInfo(object):
     def __init__(self):
-        self.mac = None 
+        self.mac = None
         self.signal = SIGNAL_THRESHOLD
 
 
@@ -24,8 +25,8 @@ def parse_in_range():
             c = ClientInfo()
             c.mac = re.findall(p, l)[0]
         if "signal:" in l:
-             c.signal = int(l.split()[1])
-             client_info.append(c)
+            c.signal = int(l.split()[1])
+            client_info.append(c)
     return client_info
 
 
@@ -63,7 +64,7 @@ def try_unregister(conn):
     # if some user deactivates wifi, or something malfunctions want to remove
     instant_delete = set(inside) - set(clients)
     for i in instant_delete:
-        c.execute("DELETE FROM users_inside WHERE mac=?", (mac,))
+        c.execute("DELETE FROM users_inside WHERE mac=?", (i,))
 
     # iterate trough users which were inside and kick one which is out from range
     for mac in inside:
@@ -84,12 +85,12 @@ def try_register(conn):
         if client.signal > strongest_signal.signal:
             strongest_signal = client
 
-    if strongest_signal.mac == None:
+    if strongest_signal.mac is None:
         return None
 
     c = conn.cursor()
     c.execute("INSERT INTO users_inside (mac) VALUES(?)", (strongest_signal.mac,))
-    c.execute("UPDATE show_message set mac=?, seconds = 10, show = 'yes' WHERE id = 0", (strongest_signal.mac,))
+    c.execute("UPDATE show_message SET mac=?, seconds = 10, show = 'yes' WHERE id = 0", (strongest_signal.mac,))
     conn.commit()
 
 
