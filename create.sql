@@ -1,5 +1,5 @@
 CREATE TABLE users (mac TEXT UNIQUE, name TEXT UNIQUE, message TEXT);
-CREATE TABLE stats (luminosity TEXT, people_count TEXT, time INT, last_status INT, id INT PRIMARY KEY);
+CREATE TABLE stats (luminosity TEXT, people_count INT, time INT, last_status INT, id INT PRIMARY KEY);
 CREATE TABLE turning (turn_on INT, id INT);
 CREATE TABLE users_inside(mac TEXT UNIQUE NOT NULL PRIMARY KEY);
 CREATE TABLE show_message (show INT, mac TEXT, seconds INT, id INT);

@@ -20,9 +20,9 @@ def switch_lights():
             }), status.HTTP_404_NOT_FOUND
         try:
             if command == "turn_on":
-                cur.execute("UPDATE turning SET turn_on=?, turn_off=? WHERE id = 0", (1, 0))
+                cur.execute("UPDATE turning SET turn_on=? WHERE id = 0", (1,))
             else:
-                cur.execute("UPDATE turning SET turn_on=?, turn_off=? WHERE id = 0", (0, 1))
+                cur.execute("UPDATE turning SET turn_on=? WHERE id = 0", (2,))
             con.commit()
         except:
             con.rollback()
