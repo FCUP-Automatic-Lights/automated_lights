@@ -44,7 +44,7 @@ if __name__ == "__main__":
             
             # remotely switching lights
             c.execute("SELECT turn_on from turning where id = 0")
-            tryingToTurnOn = c.fetchone()[]
+            tryingToTurnOn = c.fetchone()[0]
             # after we obtained data we will set status to zero
             if tryingToTurnOn != 0:
                 c.execute("UPDATE turning set turn_on = 0 where id = 0")
