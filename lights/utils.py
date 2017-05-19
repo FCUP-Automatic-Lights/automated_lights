@@ -10,7 +10,7 @@ p = re.compile(r'([0-9a-f]{2}(?::[0-9a-f]{2}){5})', re.IGNORECASE)
 # simple data structure which holds client info
 class ClientInfo(object):
     def __init__(self):
-        self.mac = "original"
+        self.mac = None 
         self.signal = SIGNAL_THRESHOLD
 
 
@@ -53,26 +53,6 @@ def return_in_range_stations(conn):
         return 0, []
     return 1, in_range
 
-# creates all required data tables
-def create_tables():
-    conn = sqlite3.connect('database.db')
-    c = conn.cursor()
-    c.execute('CREATE TABLE users (mac TEXT UNIQUE, name TEXT UNIQUE, message TEXT)')
-
-    c.execute('CREATE TABLE stats (luminosity TEXT, people_count TEXT, time INT, last_status INT, id INT PRIMARY KEY )')
-    c.execute('INSERT INTO stats(luminosity, people_count, time, last_status, id) VALUES (-1,-1,-1,-1,0)')
-
-    c.execute('CREATE TABLE users_inside(mac TEXT PRIMARY KEY UNIQUE)')
-
-    c.execute('CREATE TABLE turning (turn_on INT, turn_off INT, id INT)')
-    c.execute('INSERT INTO turning(turn_on, turn_off, id) VALUES (-1, -1, 0)')
-    c.execute('CREATE TABLE users_inside(mac TEXT UNIQUE NOT NULL PRIMARY KEY)')
-
-    c.execute('CREATE TABLE show_message (show INT, mac TEXT, seconds INT, id INT)')
-    c.execute("INSERT INTO show_message(show, mac, seconds, id) VALUES ('no', 'no', '0', 0)")
-
-    conn.close()
-
 
 # checks whether all conditions are met to unregistered user from system
 def try_unregister(conn):
@@ -97,20 +77,19 @@ def try_register(conn):
     clients = filter_stations(conn)
     strongest_signal = ClientInfo()
     for client in clients:
-        # TODO: Might be a problem if there are two users in range
         if client.signal > strongest_signal.signal:
             strongest_signal = client
 
-    if strongest_signal.mac == 'original':
-        return 0
+    if strongest_signal.mac == None:
+        return None
+
     c = conn.cursor()
     c.execute("INSERT INTO users_inside (mac) VALUES(?)", (strongest_signal.mac,))
     c.execute("UPDATE show_message set mac=?, seconds = 10, show = 'yes' WHERE id = 0", (strongest_signal.mac,))
     conn.commit()
-    # todo store information that new user entered for message
 
 
-# query for getting users who are inside
+# get users which are registerd inside a room
 def get_users_inside(conn):
     conn.row_factory = lambda cursor, row: row[0]
     c = conn.cursor()
