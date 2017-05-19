@@ -21,10 +21,11 @@ def parse_in_range():
     c = None
     for l in output:
         if "Station" in l:
-            if c is not None: client_info.append(c)
             c = ClientInfo()
             c.mac = re.findall(p, l)[0]
-        if "signal:" in l: c.signal = int(l.split()[1])
+        if "signal:" in l:
+             c.signal = int(l.split()[1])
+             client_info.append(c)
     return client_info
 
 
@@ -37,9 +38,7 @@ def filter_stations(conn):
         if c.mac in possible and c.signal >= SIGNAL_THRESHOLD:
             in_range.append(c)
 
-    if not in_range:
-        return 0, []
-    return 1, in_range
+    return in_range
 
 
 def return_in_range_stations(conn):
@@ -77,6 +76,7 @@ def create_tables():
 
 # checks whether all conditions are met to unregistered user from system
 def try_unregister(conn):
+    # TODO: this needs refactor
     clients = parse_in_range()
     inside = get_users_inside(conn)
     # iterate trough users which were inside and kick one which is out from range
@@ -94,7 +94,7 @@ def try_unregister(conn):
 
 # tries to register user to room if conditions are met
 def try_register(conn):
-    _, clients = filter_stations(conn)
+    clients = filter_stations(conn)
     strongest_signal = ClientInfo()
     for client in clients:
         # TODO: Might be a problem if there are two users in range

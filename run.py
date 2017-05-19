@@ -17,9 +17,9 @@ def switch_lights():
         if command != "turn_on" and command != "turn_off":
             return jsonify({
                 'error': 'performing bad query'
-            })
+            }), status.HTTP_404_NOT_FOUND
         try:
-            if command is "turn_on":
+            if command == "turn_on":
                 cur.execute("UPDATE turning SET turn_on=?, turn_off=? WHERE id = 0", (1, 0))
             else:
                 cur.execute("UPDATE turning SET turn_on=?, turn_off=? WHERE id = 0", (0, 1))
@@ -28,7 +28,7 @@ def switch_lights():
             con.rollback()
             return jsonify({
                 'error': 'error occurred during inserting into database'
-            })
+            }), status.HTTP_404_NOT_FOUND
 
     data = cur.execute('SELECT luminosity, people_count, time FROM stats WHERE id = 0')
     lum, people_count, time = data.fetchone()
@@ -46,9 +46,8 @@ def new_user():
     if request.method == 'POST':
         nm = request.args.get("name")
         mac = request.args.get("mac")
-        message = request.args.get("message")
         # validate given arguments
-        if nm is None or mac is None or message is None:
+        if nm is None or mac is None:
             return jsonify({
                 'performed': False,
                 'error': 'one of arguments is not defined'
@@ -57,21 +56,21 @@ def new_user():
             return jsonify({
                 'performed': False,
                 'error': 'given mac is not valid'
-            })
+            }), status.HTTP_404_NOT_FOUND
 
         con = None
         try:
             con = sqlite3.connect("database.db")
             cur = con.cursor()
 
-            cur.execute("INSERT INTO users (name,mac,message) VALUES(?, ?, ?)", (nm, mac, message))
+            cur.execute("INSERT INTO users (name,mac) VALUES(?, ?)", (nm, mac))
             con.commit()
         except:
             con.rollback()
             return jsonify({
                 'performed': False,
                 'error': 'error occurred during inserting into database'
-            })
+            }), status.HTTP_404_NOT_FOUND
         finally:
             con.close()
 
@@ -99,14 +98,14 @@ def show_message():
             else:
                 cur.execute("UPDATE show_message SET seconds=?", (remaining_time,))
             con.commit()
-            return render_template('message.html', user=user, message=message)
+            return render_template('message.html', user=user)
         else:
             return render_template('message.html')
         con.rollback()
         return jsonify({
             'performed': False,
             'error': 'error occurred during inserting into database'
-        })
+        }), status.HTTP_404_NOT_FOUND
     finally:
         con.close()
 
